@@ -255,6 +255,10 @@ The one call to action, drawn as a solid stencil-ink slab.
 ### Manifest Line
 - **Style:** one row per role on the five-column template, 1.375rem vertical padding, carbon-rule bottom border, carbon stencil line number.
 
+### Shipper Photo
+- **Style:** the owner's portrait stapled into field 01 beside the name, like a passport photo on a form: a 4px form-shade mat inside a carbon-rule hairline, tilted -2°, with the same soft drop as the seal tag and a small staple (ink-soft outline on form-shade) across the top edge. 4.5rem square on phones, 5.5rem from `sheet:` up.
+- **Source:** `shipper.photo` in `app/manifest-data.ts` (a file in `public/`); set it to `null` to leave the field without a photo.
+
 ### Seal Tag
 - **Style:** carbon tab with form-white text (label caps, stencil number, small note) hanging from a carbon cable SVG, carrying the live commit hash or "Unsealed".
 

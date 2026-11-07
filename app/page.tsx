@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { cargo, declaredLines, shipper } from "./manifest-data";
 import { containerNumber, declaredProjects, projects } from "./projects-data";
@@ -27,6 +28,15 @@ function RouteHead() {
     <svg className="-ml-[0.04em] h-[0.36em] w-[0.3em] flex-none fill-ink" viewBox="0 0 40 48" aria-hidden="true" data-route-head>
       <path d="M0 0 40 24 0 48 9 24Z" />
     </svg>
+  );
+}
+
+// A passport photo stapled to the shipper field
+function ShipperPhoto({ src, alt }: { src: string; alt: string }) {
+  return (
+    <span className="relative block flex-none -rotate-2 border border-carbon-rule bg-form-shade p-1 shadow-[0_6px_14px_-8px_rgb(21_23_26/0.55)] before:absolute before:-top-[3px] before:left-1/2 before:z-10 before:h-[5px] before:w-7 before:-translate-x-1/2 before:rounded-[1px] before:border before:border-ink-soft before:bg-form-shade">
+      <Image src={src} alt={alt} width={88} height={88} preload className="block size-[4.5rem] object-cover sheet:size-[5.5rem]" />
+    </span>
   );
 }
 
@@ -81,12 +91,20 @@ export default function Home() {
             </SheetHead>
 
             <dl className="m-0 grid grid-cols-1 border-l border-carbon-rule sheet:grid-cols-24">
-              <FormField n="01" label="Shipper" className="order-0 sheet:col-[1/15] wide:col-[1/11]">
-                <span className={`${display} mb-1.5 block text-[2.25rem] leading-none font-extrabold [&>span]:text-[1.375rem]`}>
-                  <Field value={shipper.name} what="Name" tilt={-4} />
-                </span>
-                <span className={`${display} block text-[clamp(1.625rem,2.4vw,2.125rem)] leading-none font-extrabold`}>
-                  Full-stack engineer
+              <FormField
+                n="01"
+                label="Shipper"
+                className="order-0 sheet:col-[1/15] wide:col-[1/11]"
+                valueClassName="flex items-center gap-4"
+              >
+                {shipper.photo && <ShipperPhoto src={shipper.photo.src} alt={shipper.photo.alt} />}
+                <span className="min-w-0">
+                  <span className={`${display} mb-1.5 block text-[2.25rem] leading-none font-extrabold [&>span]:text-[1.375rem]`}>
+                    <Field value={shipper.name} what="Name" tilt={-4} />
+                  </span>
+                  <span className={`${display} block text-[clamp(1.625rem,2.4vw,2.125rem)] leading-none font-extrabold`}>
+                    Full-stack engineer
+                  </span>
                 </span>
               </FormField>
 

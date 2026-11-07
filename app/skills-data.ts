@@ -4,10 +4,10 @@ import { containerNumber, layers, projects, type Layer } from "./projects-data";
 // `null` renders as an AWAITING stamp: fill these in, never invent them.
 // No levels or percentages; a skill earns proof by appearing in a project's stack.
 export const skills: Record<Layer, string[] | null> = {
-  Data: null,
-  "API & services": null,
-  Interface: null,
-  Infrastructure: null,
+  Data: ["PostgreSQL"],
+  "API & services": ["Dotnet core", "Node.js", "Express", "Spring Boot"],
+  Interface: ["React", "Next.js", "Tailwind CSS", "Bootstrap"],
+  Infrastructure: ["Docker", "Kubernetes", "AWS"],
 };
 
 export const declaredSkills = layers.reduce((count, layer) => count + (skills[layer]?.length ?? 0), 0);

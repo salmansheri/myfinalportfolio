@@ -15,6 +15,8 @@ export const shipper = {
   links: [
     {label: "Github", href: "https://github.com/salmansheri"}
   ] as { label: string; href: string }[],
+  // Stapled to the shipper field like a passport photo; null leaves it off
+  photo: { src: "/myphoto.jpg", alt: "Portrait of Salman Sheriff" } as { src: string; alt: string } | null,
 };
 
 // One line per role, newest first. The open line below is the form's blank, not a role.
