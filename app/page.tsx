@@ -1,69 +1,294 @@
-import Image from "next/image";
+import { cargo, declaredLines, shipper } from "./manifest-data";
+import { Awaiting, Field } from "./components/Awaiting";
+import { EmailAction } from "./components/EmailAction";
+import { Shipment } from "./components/Shipment";
+
+const commit = process.env.COMMIT_SHA || null;
+const dirty = process.env.COMMIT_DIRTY === "1";
+const billNumber = commit ? `MNF-${commit}${dirty ? "+" : ""}`.toUpperCase() : null;
+
+const display = "font-display uppercase";
+const formLabel = "text-xs font-semibold tracking-[0.08em] uppercase text-carbon";
+const bigValue = `${display} text-[clamp(1.75rem,2.6vw,2.5rem)] leading-none font-extrabold`;
+const lineCell =
+  "col-start-2 flex items-center gap-3 before:min-w-[5.5rem] before:text-[0.6875rem] before:font-semibold before:tracking-[0.08em] before:text-carbon before:uppercase before:content-[attr(data-label)] sheet:col-start-auto sheet:block sheet:before:hidden";
+
+function RouteHead() {
+  return (
+    <svg className="-ml-[0.04em] h-[0.36em] w-[0.3em] flex-none fill-ink" viewBox="0 0 40 48" aria-hidden="true" data-route-head>
+      <path d="M0 0 40 24 0 48 9 24Z" />
+    </svg>
+  );
+}
+
+function SealTag() {
+  return (
+    <div className="flex items-start text-carbon" data-seal>
+      <svg className="mt-[0.4rem] h-9 w-14 flex-none" viewBox="0 0 64 40" aria-hidden="true">
+        <path d="M2 6c18 0 26 30 60 22" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+      </svg>
+      <div className="grid -rotate-4 gap-0.5 rounded-l-sm rounded-r-xl bg-carbon bg-[radial-gradient(circle_at_0.65rem_50%,var(--color-form-shade)_0.3rem,transparent_0.35rem)] py-2 pr-3.5 pb-2.5 pl-6 text-form shadow-[0_6px_14px_-8px_rgb(21_23_26/0.55)]">
+        <span className="text-[0.6875rem] font-bold tracking-[0.14em] uppercase">Seal</span>
+        <span className={`${display} text-[1.625rem] leading-none font-extrabold tracking-[0.08em]`}>
+          {commit ? `${commit}${dirty ? "+" : ""}` : "Unsealed"}
+        </span>
+        <span className="text-xs">
+          {!commit
+            ? "Built outside version control"
+            : dirty
+              ? "Uncommitted changes on top of this commit"
+              : "Commit this page shipped from"}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// One numbered box on the bill of lading
+function FormField({
+  n,
+  label,
+  className,
+  valueClassName = "",
+  children,
+}: {
+  n: string;
+  label: React.ReactNode;
+  className: string;
+  valueClassName?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className={`m-0 min-w-0 border-r border-b border-carbon-rule px-4 pt-3 pb-4 ${className}`}>
+      <dt className={`mb-2.5 flex items-center gap-2 ${formLabel}`}>
+        <span className="inline-grid min-w-[1.75em] place-items-center border border-carbon px-[0.2em] py-[0.1em] font-bold tracking-normal">
+          {n}
+        </span>
+        {label}
+      </dt>
+      <dd className={`m-0 text-[1.0625rem] leading-[1.4] ${valueClassName}`}>{children}</dd>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <>
+      <header className="ink-steel mx-auto flex max-w-sheet flex-wrap items-start justify-between gap-4 px-(--gutter) pt-5 sheet:items-center">
+        <p className="m-0 flex flex-col gap-0.5 sheet:flex-row sheet:flex-wrap sheet:items-baseline sheet:gap-x-5 sheet:gap-y-1">
+          <a className={`${display} text-[1.75rem] font-extrabold tracking-[0.04em] text-ink no-underline`} href="#bill">
+            Manifest
+          </a>
+          <span className={`${display} text-base font-bold tracking-[0.08em] whitespace-nowrap sheet:text-xl`}>
+            <span className="font-sans text-xs font-semibold tracking-[0.08em]">Bill no.</span>{" "}
+            {billNumber ?? <Awaiting what="Bill number" tilt={-2} />}
+          </span>
+        </p>
+        <nav aria-label="Primary">
+          <ul className="m-0 flex list-none gap-[clamp(1rem,3vw,2.25rem)] p-0">
+            {[
+              ["#cargo", "Experience"],
+              ["#consign", "Contact"],
+            ].map(([href, label]) => (
+              <li key={href}>
+                <a
+                  href={href}
+                  className={`${display} border-b-2 border-transparent text-[1.0625rem] font-extrabold tracking-[0.06em] text-ink no-underline transition-colors duration-[160ms] ease-out hover:border-ink sheet:text-xl`}
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </header>
+
+      <main id="bill">
+        <Shipment className="mx-auto max-w-sheet px-(--gutter)">
+          <h1
+            className={`${display} mt-[clamp(1.25rem,3vh,2rem)] mb-[clamp(1rem,2.5vh,1.5rem)] flex items-center gap-[clamp(0.5rem,1.5vw,1.5rem)] text-[clamp(2.75rem,10vw,8.5rem)] leading-[0.8] font-black tracking-[-0.01em] text-ink [font-variation-settings:'opsz'_72]`}
+          >
+            <span className="block flex-none">Schema</span>
+            <span className="flex min-w-10 flex-1 items-center" aria-hidden="true">
+              <span className="block h-[0.07em] flex-1 bg-ink" data-route-line />
+              <RouteHead />
+            </span>
+            <span className="sr-only"> to </span>
+            <span className="block flex-none" data-route-end>
+              Screen
+            </span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <article
+            className="tractor-feed bg-form px-[calc(var(--feed)+0.625rem)] pb-[clamp(2rem,4vw,3rem)] sheet:px-[calc(var(--feed)+clamp(0.75rem,2.5vw,2.25rem))]"
+            aria-labelledby="bill-title"
+          >
+            <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b-[3px] border-ink pt-[clamp(1rem,2vw,1.375rem)] pb-2.5">
+              <h2 id="bill-title" className={`${display} m-0 text-[clamp(1.75rem,3vw,2.5rem)] leading-none font-extrabold tracking-[0.02em]`}>
+                Bill of lading
+              </h2>
+              <p className="m-0 flex gap-4 text-xs tracking-[0.04em] text-carbon uppercase sheet:gap-6 sheet:text-sm">
+                <span>Non-negotiable</span>
+                <span>Original</span>
+              </p>
+            </div>
+
+            <dl className="m-0 grid grid-cols-1 border-l border-carbon-rule sheet:grid-cols-24">
+              <FormField n="01" label="Shipper" className="order-0 sheet:col-[1/15] wide:col-[1/11]">
+                <span className={`${display} mb-1.5 block text-[2.25rem] leading-none font-extrabold [&>span]:text-[1.375rem]`}>
+                  <Field value={shipper.name} what="Name" tilt={-4} />
+                </span>
+                <span className={`${display} block text-[clamp(1.625rem,2.4vw,2.125rem)] leading-none font-extrabold`}>
+                  Full-stack engineer
+                </span>
+              </FormField>
+
+              <FormField n="02" label="Based in" className="order-2 sheet:order-none sheet:col-[15/25] wide:col-[11/17]">
+                <Field value={shipper.location} what="Location" tilt={2} />
+              </FormField>
+
+              <FormField n="03" label="Port of loading" className="order-2 sheet:order-none sheet:col-[1/9] wide:col-[1/7]" valueClassName={bigValue}>
+                Database
+              </FormField>
+              <FormField n="04" label="Via" className="order-2 sheet:order-none sheet:col-[9/17] wide:col-[7/12]" valueClassName={bigValue}>
+                API &amp; services
+              </FormField>
+              <FormField n="05" label="Port of discharge" className="order-2 sheet:order-none sheet:col-[17/25] wide:col-[12/17]" valueClassName={bigValue}>
+                Interface
+              </FormField>
+
+              <FormField
+                n="06"
+                label="Transshipment"
+                className="order-2 sheet:order-none sheet:col-[1/13] wide:col-[1/9]"
+                valueClassName="flex flex-wrap items-center gap-5 sheet:flex-nowrap"
+              >
+                <span
+                  className={`${display} stamp-grain flex-none -rotate-5 border-[3px] border-(--stamp) px-[0.35em] pt-[0.05em] text-[2.5rem] leading-none font-black tracking-[0.06em] text-(--stamp)`}
+                  data-stamp-none
+                >
+                  None
+                </span>
+                <span className="max-w-[34ch] font-medium">One pair of hands from the first table to the last pixel.</span>
+              </FormField>
+
+              <FormField n="07" label="Accepting" className="order-2 sheet:order-none sheet:col-[13/25] wide:col-[9/17]">
+                <ul className="m-0 flex list-none flex-wrap gap-x-5 gap-y-1.5 p-0 font-semibold">
+                  <li className="check-box">Full-time roles</li>
+                  <li className="check-box">Freelance projects</li>
+                  <li className="check-box">Studio contracts</li>
+                </ul>
+              </FormField>
+
+              {/* The action follows the shipper's name on phones, not seven fields later */}
+              <FormField
+                n="08"
+                label={<>Shipper&rsquo;s signature</>}
+                className="order-1 bg-form-shade sheet:order-none sheet:col-[1/25] sheet:row-2 wide:col-[17/25] wide:row-[1/4]"
+                valueClassName="grid gap-5 sheet:grid-cols-[minmax(0,1fr)_auto] sheet:items-end wide:grid-cols-1 wide:items-stretch"
+              >
+                <span className={`${display} block min-h-14 border-b border-ink pt-3 pb-2 text-[1.75rem] font-bold sheet:col-span-full`}>
+                  <Field value={shipper.name} what="Signature name" tilt={-2} />
+                </span>
+                <EmailAction email={shipper.email} />
+                <SealTag />
+              </FormField>
+            </dl>
+
+            <section id="cargo" className="mt-[clamp(1.5rem,2.5vw,2rem)] scroll-mt-8" aria-labelledby="cargo-title">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b-[3px] border-ink pb-3">
+                <h2 id="cargo-title" className={`${display} m-0 text-[clamp(2.25rem,3.6vw,2.875rem)] leading-[0.95] font-extrabold`}>
+                  Description of goods
+                </h2>
+                <p className="m-0 flex items-center gap-2.5 text-sm font-semibold tracking-[0.06em] text-carbon uppercase">
+                  Lines declared{" "}
+                  {declaredLines > 0 ? <strong>{declaredLines}</strong> : <Awaiting what="Line count" tilt={-2} />}
+                </p>
+              </div>
+
+              <div
+                className={`hidden border-b border-carbon-rule py-2.5 sheet:grid sheet:grid-cols-[4.5rem_minmax(0,1.1fr)_minmax(0,1.1fr)_minmax(0,0.8fr)_minmax(0,2fr)] sheet:gap-4 ${formLabel}`}
+                aria-hidden="true"
+              >
+                <span>Line</span>
+                <span>Consignee</span>
+                <span>Goods</span>
+                <span>Period</span>
+                <span>Shipped</span>
+              </div>
+
+              <ol className="m-0 list-none p-0">
+                {cargo.map((line, i) => (
+                  <li
+                    key={i}
+                    className="grid grid-cols-[3rem_minmax(0,1fr)] items-start gap-x-3 gap-y-2 border-b border-carbon-rule py-[1.375rem] text-[1.0625rem] sheet:grid-cols-[4.5rem_minmax(0,1.1fr)_minmax(0,1.1fr)_minmax(0,0.8fr)_minmax(0,2fr)] sheet:items-center sheet:gap-4"
+                  >
+                    <span className={`${display} row-span-4 text-[1.75rem] leading-none font-extrabold text-carbon sheet:row-span-1`}>
+                      {String(i + 1).padStart(3, "0")}
+                    </span>
+                    <span className={lineCell} data-label="Consignee">
+                      <Field value={line.company} what="Company" tilt={i % 2 ? 2 : -2} />
+                    </span>
+                    <span className={lineCell} data-label="Goods">
+                      <Field value={line.role} what="Role" tilt={i % 2 ? -3 : 3} />
+                    </span>
+                    <span className={lineCell} data-label="Period">
+                      <Field value={line.period} what="Dates" tilt={-1} />
+                    </span>
+                    <span className={lineCell} data-label="Shipped">
+                      <Field value={line.shipped} what="What was shipped" tilt={1} />
+                    </span>
+                  </li>
+                ))}
+              </ol>
+
+              <p className="mt-5 mb-0 max-w-[60ch] text-[0.9375rem] text-ink-soft">
+                Further lines awaiting. Every line is filled in by the shipper; nothing on this bill is estimated.
+              </p>
+            </section>
+          </article>
+        </Shipment>
+
+        <section
+          id="consign"
+          className="ink-steel mx-auto max-w-sheet scroll-mt-4 px-(--gutter) pt-[clamp(5rem,12vw,9rem)] pb-[clamp(4rem,8vw,6rem)]"
+          aria-labelledby="consign-title"
+        >
+          <h2
+            id="consign-title"
+            className={`${display} mt-0 mb-6 max-w-[10ch] text-[clamp(3.5rem,9vw,8rem)] leading-[0.85] font-black text-ink [font-variation-settings:'opsz'_72]`}
+          >
+            Consign the next one
+          </h2>
+          <p className="mt-0 mb-10 max-w-[44ch] text-[clamp(1.125rem,1.6vw,1.375rem)] leading-[1.45] font-medium text-ink">
+            A role, a project, a studio build. Send the brief and it goes from schema to screen in one pair of hands.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+          <div className="max-w-120">
+            <EmailAction email={shipper.email} tone="steel" />
+          </div>
+          {shipper.links.length > 0 && (
+            <ul className="mt-8 mb-0 flex list-none flex-wrap gap-x-6 gap-y-2 p-0 font-semibold">
+              {shipper.links.map((l) => (
+                <li key={l.href}>
+                  <a className="text-ink" href={l.href}>
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </main>
-    </div>
+
+      <footer className="ink-steel mx-auto flex w-[min(100%-2*var(--gutter),var(--container-sheet)-2*var(--gutter))] flex-wrap justify-between gap-x-8 gap-y-2 border-t-2 border-ink pt-5 pb-8 text-sm font-medium text-ink [&_p]:m-0">
+        <p>
+          Designed, built and shipped by{" "}
+          {shipper.name ?? <Awaiting what="Shipper name" tilt={-2} />}
+        </p>
+        <p>
+          Seal <strong>{commit ? `${commit}${dirty ? "+" : ""}` : "unsealed"}</strong> · Next.js
+        </p>
+      </footer>
+    </>
   );
 }

@@ -1,26 +1,130 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --gutter: clamp(1rem, 3vw, 2.5rem);
+  /* Stamp ink: carbon blue on the form, set to ink on bare steel */
+  --stamp: var(--color-carbon);
+}
+
+@theme {
+  /* Container steel */
+  --color-orange: #e2531f;
+  --color-orange-rib: #cc4818;
+
+  /* The bill */
+  --color-form: #f1f4f7;
+  --color-form-shade: #e3e8ee;
+  --color-ink: #15171a;
+  --color-ink-soft: #3c4047;
+  --color-carbon: #2b4a8b;
+  --color-carbon-rule: #b6c1d6;
+
+  --container-sheet: 78rem;
+
+  /* Form layouts: stacked on phones, two-up on tablets, the full bill from 1080px */
+  --breakpoint-sheet: 45rem;
+  --breakpoint-wide: 67.5rem;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-stencil), "Arial Narrow", sans-serif;
+  --font-sans: var(--font-form), system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Stamp ink follows the region it sits on */
+@utility ink-steel {
+  --stamp: var(--color-ink);
+}
+
+/* Rubber picks up ink unevenly */
+@utility stamp-grain {
+  mask-image: url("/textures/stamp-grain.png");
+  mask-size: 15rem 5rem;
+}
+
+/* Continuous form: punched feed holes down both margins, the steel shows through them,
+   with a perforation between the feed strip and the bill */
+@utility tractor-feed {
+  --feed: 1.5rem;
+  position: relative;
+  mask:
+    radial-gradient(circle, transparent 0.4rem, var(--color-ink) 0.45rem) left top / var(--feed) 1.5rem repeat-y,
+    radial-gradient(circle, transparent 0.4rem, var(--color-ink) 0.45rem) right top / var(--feed) 1.5rem repeat-y,
+    linear-gradient(var(--color-ink), var(--color-ink)) center / calc(100% - 2 * var(--feed)) 100% no-repeat;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-left: 1px dashed var(--color-carbon-rule);
+  }
+  &::before {
+    left: var(--feed);
+  }
+  &::after {
+    right: var(--feed);
+  }
+
+  @media (width >= 45rem) {
+    --feed: 2.25rem;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* A ticked checkbox on the form */
+@utility check-box {
+  &::before {
+    content: "";
+    display: inline-block;
+    width: 0.7em;
+    height: 0.7em;
+    margin-right: 0.45em;
+    border: 1.5px solid var(--color-carbon);
+    background: linear-gradient(var(--color-carbon), var(--color-carbon)) center / 55% 55% no-repeat;
+    vertical-align: -0.05em;
+  }
+}
+
+@layer base {
+  html {
+    background: var(--color-orange);
+    scroll-behavior: smooth;
+    scrollbar-color: var(--color-ink) var(--color-orange-rib);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    min-height: 100dvh;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-variation-settings: "wdth" 92;
+    font-feature-settings: "tnum" 1;
+    -webkit-font-smoothing: antialiased;
+    /* Container side wall: one rib pitch per tile */
+    background: var(--color-orange) url("/textures/corrugation.png") repeat left top / 5rem 0.5rem;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-form);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-carbon);
+    outline-offset: 3px;
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
 }
