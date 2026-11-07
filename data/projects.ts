@@ -22,13 +22,13 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "project-1",
-    name: null,
-    summary: null,
+    name: "Rubric A Messenger application",
+    summary: "A real-time messaging application built with React, Spring Boot, Websokets, allowing users to send and receive messages instantly.",
     built: null,
-    stack: null,
-    status: null,
+    stack: ["Nextjs", "Spring Boot", "Websockets", "PostgreSQL"],
+    status: "Live",
     live: null,
-    repo: null,
+    repo: "https://github.com/salmansheri/messenger",
     image: null,
   },
 ];

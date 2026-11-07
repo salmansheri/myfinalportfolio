@@ -40,7 +40,7 @@ The seal tag carries the deployed commit hash: the page proves it was shipped.
 ## Later additions
 
 - Containers loaded: one line per project, linking to the packing list at /projects.
-- Stowage plan: skills by layer in four holds, each skill linked to the projects whose stack uses it; data in app/skills-data.ts.
+- Stowage plan: skills by layer in four holds, each skill linked to the projects whose stack uses it; data in data/skills.ts.
 
 ## Unresolved
 

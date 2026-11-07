@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { shipper } from "../manifest-data";
+import { shipper } from "@/data/manifest";
 import { Awaiting } from "./Awaiting";
 
 // Shared pieces of the manifest: type voices, the build seal, header, footer and form fields.

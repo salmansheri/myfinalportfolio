@@ -13,7 +13,8 @@ export const shipper = {
   email: "sheriffsalman00@gmail.com" as string | null,
   location: "Coimbatore, Tamil Nadu" as string | null,
   links: [
-    {label: "Github", href: "https://github.com/salmansheri"}
+    { label: "GitHub", href: "https://github.com/salmansheri" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/salman-sheriff-6b3721214/" },
   ] as { label: string; href: string }[],
   // Stapled to the shipper field like a passport photo; null leaves it off
   photo: { src: "/myphoto.jpg", alt: "Portrait of Salman Sheriff" } as { src: string; alt: string } | null,

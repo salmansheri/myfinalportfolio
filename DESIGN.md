@@ -255,9 +255,13 @@ The one call to action, drawn as a solid stencil-ink slab.
 ### Manifest Line
 - **Style:** one row per role on the five-column template, 1.375rem vertical padding, carbon-rule bottom border, carbon stencil line number.
 
+### Profile Links
+- **Style:** on the Consign band, each profile link is a 24px [Phosphor](https://phosphoricons.com) icon in the **bold** weight (to match the 2–2.5px strokes of the site's own arrows) followed by its label in semibold ink, with a 40% ink underline that turns solid on hover (160ms). Opens in a new tab.
+- **Icon choice:** derived from the link's host: `GithubLogo` for github.com, `LinkedinLogo` for linkedin.com, `LinkSimple` for anything else. Imported from `@phosphor-icons/react/dist/ssr` so they render on the server with no client JavaScript.
+
 ### Shipper Photo
 - **Style:** the owner's portrait stapled into field 01 beside the name, like a passport photo on a form: a 4px form-shade mat inside a carbon-rule hairline, tilted -2°, with the same soft drop as the seal tag and a small staple (ink-soft outline on form-shade) across the top edge. 4.5rem square on phones, 5.5rem from `sheet:` up.
-- **Source:** `shipper.photo` in `app/manifest-data.ts` (a file in `public/`); set it to `null` to leave the field without a photo.
+- **Source:** `shipper.photo` in `data/manifest.ts` (a file in `public/`); set it to `null` to leave the field without a photo.
 
 ### Seal Tag
 - **Style:** carbon tab with form-white text (label caps, stencil number, small note) hanging from a carbon cable SVG, carrying the live commit hash or "Unsealed".

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { containerNumber, declaredProjects, layers, projects, type Project } from "../projects-data";
-import { shipper } from "../manifest-data";
+import { containerNumber, declaredProjects, layers, projects, type Project } from "@/data/projects";
+import { shipper } from "@/data/manifest";
 import { Awaiting, Field, StatusStamp } from "../components/Awaiting";
 import { ConsignSection } from "../components/ConsignSection";
 import { Shipment } from "../components/Shipment";

@@ -15,6 +15,7 @@ Nothing on the site is invented. Any fact left empty in the data files renders a
 - TypeScript
 - [Tailwind CSS 4](https://tailwindcss.com), with tokens in `@theme`
 - [GSAP](https://gsap.com) with ScrollTrigger for motion
+- [Phosphor Icons](https://phosphoricons.com) for profile link icons
 - Bun as the package manager
 
 ## Getting started
@@ -36,17 +37,17 @@ bun run lint    # ESLint
 
 ## Editing the content
 
-All the facts live in three data files. Each file explains its own fields.
+All the facts live in three files in the `data/` folder. Each file explains its own fields.
 
 | File | What it holds |
 | --- | --- |
-| `app/manifest-data.ts` | Name, email, location, profile links, and work experience (`cargo`) |
-| `app/projects-data.ts` | Projects: name, summary, layers built, stack, status, links, screenshot |
-| `app/skills-data.ts` | Skills, grouped by layer: Data, API & services, Interface, Infrastructure |
+| `data/manifest.ts` | Name, email, location, profile links, and work experience (`cargo`) |
+| `data/projects.ts` | Projects: name, summary, layers built, stack, status, links, screenshot |
+| `data/skills.ts` | Skills, grouped by layer: Data, API & services, Interface, Infrastructure |
 
 Put project screenshots in `public/projects/` and reference them as `/projects/<file>`.
 
-Under each skill, the site links the projects whose `stack` names that skill. Use the same spelling in both files; capitals don't matter.
+Under each skill, the site links the projects whose `stack` names that skill. Use the same spelling in `data/skills.ts` and `data/projects.ts`; capitals don't matter.
 
 ## Project structure
 
@@ -56,17 +57,19 @@ app/
   projects/page.tsx        the packing list
   layout.tsx               fonts and metadata
   globals.css              Tailwind theme tokens and custom utilities
-  manifest-data.ts         owner and experience data
-  projects-data.ts         project data and container numbers
-  skills-data.ts           skills by layer
   components/
     site.tsx               header, footer, form fields, shared type
     Shipment.tsx           all page motion (GSAP)
     EmailAction.tsx        email button, copy address, pending state
     Awaiting.tsx           stamps: AWAITING, LIVE, IN TRANSIT
     StowagePlan.tsx        the skills section
-    ConsignSection.tsx     the closing contact band
+    ConsignSection.tsx     the closing contact band and profile links
+data/
+  manifest.ts              owner details, profile links and experience
+  projects.ts              projects and container numbers
+  skills.ts                skills by layer
 public/
+  myphoto.jpg              the shipper photo
   textures/                corrugated steel and stamp-grain textures
   projects/                project screenshots
 ```

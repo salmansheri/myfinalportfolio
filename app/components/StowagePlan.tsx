@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { layers } from "../projects-data";
-import { declaredSkills, provenOn, skills } from "../skills-data";
+import { layers } from "@/data/projects";
+import { declaredSkills, provenOn, skills } from "@/data/skills";
 import { Awaiting } from "./Awaiting";
 import { ContainerCode, FormField, SheetHead } from "./site";
 

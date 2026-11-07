@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { cargo, declaredLines, shipper } from "./manifest-data";
-import { containerNumber, declaredProjects, projects } from "./projects-data";
+import { cargo, declaredLines, shipper } from "@/data/manifest";
+import { containerNumber, declaredProjects, projects } from "@/data/projects";
 import { Awaiting, Field, StatusStamp } from "./components/Awaiting";
 import { EmailAction } from "./components/EmailAction";
 import { Shipment } from "./components/Shipment";

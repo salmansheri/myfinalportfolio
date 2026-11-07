@@ -1,4 +1,4 @@
-import { containerNumber, layers, projects, type Layer } from "./projects-data";
+import { containerNumber, layers, projects, type Layer } from "./projects";
 
 // The stowage plan: which skills sit in which layer of the stack.
 // `null` renders as an AWAITING stamp: fill these in, never invent them.

@@ -1,6 +1,14 @@
-import { shipper } from "../manifest-data";
+import { GithubLogo, LinkedinLogo, LinkSimple } from "@phosphor-icons/react/dist/ssr";
+import { shipper } from "@/data/manifest";
 import { EmailAction } from "./EmailAction";
 import { display } from "./site";
+
+// Pick the mark from where the link goes, so the data file only needs a label and an address
+function ProfileIcon({ href }: { href: string }) {
+  const host = new URL(href).hostname;
+  const Icon = host.endsWith("github.com") ? GithubLogo : host.endsWith("linkedin.com") ? LinkedinLogo : LinkSimple;
+  return <Icon weight="bold" aria-hidden="true" className="size-6 flex-none" />;
+}
 
 // The closing band on bare steel: the stencilled call to send work, and the way to send it
 export function ConsignSection() {
@@ -24,11 +32,18 @@ export function ConsignSection() {
         <EmailAction email={shipper.email} tone="steel" />
       </div>
       {shipper.links.length > 0 && (
-        <ul className="mt-8 mb-0 flex list-none flex-wrap gap-x-6 gap-y-2 p-0 font-semibold">
+        <ul className="mt-8 mb-0 flex list-none flex-wrap gap-x-7 gap-y-3 p-0 font-semibold">
           {shipper.links.map((l) => (
             <li key={l.href}>
-              <a className="text-ink" href={l.href}>
+              <a
+                className="inline-flex items-center gap-2 text-ink underline decoration-ink/40 underline-offset-4 transition-colors duration-[160ms] hover:decoration-ink"
+                href={l.href}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <ProfileIcon href={l.href} />
                 {l.label}
+                <span className="sr-only">(opens in a new tab)</span>
               </a>
             </li>
           ))}

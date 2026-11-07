@@ -17,7 +17,7 @@ The same four audiences, now checking whether the owner's past work matches what
 
 ## Proof and constraints
 
-Projects come only from app/projects-data.ts; null fields render as AWAITING. Screenshots live in public/projects/. Container numbers are an ISO 6346 numbering scheme, not claims. No pills, no card grid: one container per project on the continuous form.
+Projects come only from data/projects.ts; null fields render as AWAITING. Screenshots live in public/projects/. Container numbers are an ISO 6346 numbering scheme, not claims. No pills, no card grid: one container per project on the continuous form.
 
 ## Memorable moment
 
