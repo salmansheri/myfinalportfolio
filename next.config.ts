@@ -12,7 +12,8 @@ function git(args: string) {
 // The commit this build was shipped from, printed on the homepage seal tag.
 // A local tree with uncommitted changes is not that commit, so it says so.
 function commitSha() {
-  const fromHost = process.env.VERCEL_GIT_COMMIT_SHA;
+  // Netlify's git builds set COMMIT_REF, Vercel's set VERCEL_GIT_COMMIT_SHA
+  const fromHost = process.env.COMMIT_REF || process.env.VERCEL_GIT_COMMIT_SHA;
   if (fromHost) return { sha: fromHost.slice(0, 7), dirty: false };
   const sha = git("rev-parse --short=7 HEAD") ?? "";
   const dirty = sha !== "" && (git("status --porcelain") ?? "") !== "";
