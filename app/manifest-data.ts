@@ -9,13 +9,15 @@ export type CargoLine = {
 };
 
 export const shipper = {
-  name: null as string | null,
-  email: null as string | null,
-  location: null as string | null,
-  links: [] as { label: string; href: string }[],
+  name: "Salman Sheriff" as string | null,
+  email: "sheriffsalman00@gmail.com" as string | null,
+  location: "Coimbatore, Tamil Nadu" as string | null,
+  links: [
+    {label: "Github", href: "https://github.com/salmansheri"}
+  ] as { label: string; href: string }[],
 };
 
 // One line per role, newest first. The open line below is the form's blank, not a role.
-export const cargo: CargoLine[] = [{ company: null, role: null, period: null, shipped: null }];
+export const cargo: CargoLine[] = [{ company: "Agile Labs", role: "Software Engineer", period: "Present", shipped: "2025-02-03" }];
 
 export const declaredLines = cargo.filter((line) => line.company && line.role).length;

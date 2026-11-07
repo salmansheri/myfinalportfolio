@@ -27,6 +27,16 @@
   --breakpoint-wide: 67.5rem;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* A rubber stamp landing: oversized and faint, then pressed flat */
+  --animate-stamp-in: stamp-in 160ms cubic-bezier(0.5, 0, 0.75, 0) both;
+
+  @keyframes stamp-in {
+    from {
+      opacity: 0.2;
+      scale: 1.35;
+    }
+  }
 }
 
 @theme inline {

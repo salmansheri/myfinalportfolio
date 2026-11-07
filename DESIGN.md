@@ -147,7 +147,7 @@ components:
 
 The whole site is one shipping document laid on the side of a container. Container orange owns entire bands as corrugated steel; on that steel sits a single continuous bill of lading, cool form-white paper with carbon-blue rules, numbered fields and rubber stamps. Monumental stencil type is the voice of the steel and the headings; a plain, slightly condensed form face fills in the fields. Nothing floats: there are no card grids, no dark screen, no neon. The bill is one sheet, and its repetition (identical numbered fields, identical cargo lines) is the grid.
 
-Density is that of a real form: tight field padding, hairline carbon rules, labels in small tracked caps, values large and plain. Honesty is a visual rule here: a fact that has not been supplied is drawn as a stamped AWAITING gap on an open line, never filled with a plausible placeholder. Motion is a single authored load moment; everything else is still paper.
+Density is that of a real form: tight field padding, hairline carbon rules, labels in small tracked caps, values large and plain. Honesty is a visual rule here: a fact that has not been supplied is drawn as a stamped AWAITING gap on an open line, never filled with a plausible placeholder. Motion speaks the document's own mechanics (paper feeding, a print head, stencil spray, a tag on its cable) and plays once; nothing loops.
 
 **Key Characteristics:**
 - Container orange as ground, with corrugation relief that only ever lightens the orange.
@@ -155,7 +155,7 @@ Density is that of a real form: tight field padding, hairline carbon rules, labe
 - One stencil display face at monumental scale; Archivo (narrowed to wdth 92, tabular figures) for every field.
 - Carbon blue for rules, field labels, numbers and stamps on the form; stencil ink for stamps on bare steel.
 - Missing facts render as AWAITING rubber stamps.
-- One load animation; no ambient motion.
+- Motion is mechanical and plays once: feed, print, spray, stamp, swing. No ambient loops.
 
 ## Colors
 
@@ -261,7 +261,14 @@ The one call to action, drawn as a solid stencil-ink slab.
 - **Style:** two stencil 800 uppercase ink links on steel (1.25rem, 1.0625rem under 45rem). Hover draws a 2px ink underline (160ms ease-out).
 
 ### Motion
-One authored load timeline (Shipment): the route line draws left to right, the arrowhead slides in, SCREEN sharpens from blur, the NONE stamp slams down, and the seal tag swings onto its cable (expo.out). It runs only under `prefers-reduced-motion: no-preference` and only when the tab is visible at load; otherwise the page renders finished. Smooth scrolling is likewise off under reduced motion.
+All motion lives in `Shipment` (GSAP + ScrollTrigger) except the copy stamp, which is a CSS keyframe. Each piece plays once and comes from how a real manifest is made:
+- **Load timeline:** the bill feeds up three hole pitches in stepped ticks (`steps(3)`, 0.36s), the route line draws left to right, the arrowhead slides in, SCREEN sharpens from blur, the NONE stamp slams down, and the seal tag swings onto its cable (`expo.out`). Skipped when the tab is not visible at load. Scroll triggers are re-measured when the feed stops.
+- **Cargo lines print:** when a line's top enters the viewport, a 6px carbon print head passes left to right while the line is revealed behind it (`clip-path`, `steps(32)`, 0.75s), then the head fades.
+- **Closing line is sprayed:** "Consign the next one" is revealed by a soft-edged mask travelling across the stencil lettering (0.9s, `power2.out`) when it reaches 80% of the viewport; the mask is cleared afterwards.
+- **Seal swings:** pointing at the seal tab swings it on its cable (-9°, 1°, -6°, back to its -4° rest, sine eases). GSAP folds the tab's CSS `rotate` into its transform, so swing angles are absolute.
+- **Copied stamp:** the copy button's result label lands like a rubber stamp (`animate-stamp-in`: 1.35× and faint to flat, 160ms).
+- **Reduced motion:** nothing travels or fades in; the bill renders finished, already printed and painted. Hover colour changes and the Copied/failed label text still change. Smooth scrolling is off.
+
 
 ## Do's and Don'ts
 
@@ -272,7 +279,7 @@ One authored load timeline (Shipment): the route line draws left to right, the a
 - **Do** add new roles as another identical manifest line, numbered in sequence.
 - **Do** add new facts as numbered fields with carbon labels and carbon-rule hairlines.
 - **Do** keep any steel texture lighter than #e2531f so ink text stays at 4.7:1 or better.
-- **Do** keep the one load animation the only authored motion, skipped under reduced motion and in background tabs.
+- **Do** draw every animation from the manifest's own mechanics, play it once, and render the finished bill under reduced motion; the load timeline is also skipped in background tabs.
 
 ### Don't:
 - **Don't** invent a value for a fact the shipper has not supplied, including names, dates, companies, counts or the email address.

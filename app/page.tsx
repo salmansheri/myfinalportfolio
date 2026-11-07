@@ -27,7 +27,7 @@ function SealTag() {
       <svg className="mt-[0.4rem] h-9 w-14 flex-none" viewBox="0 0 64 40" aria-hidden="true">
         <path d="M2 6c18 0 26 30 60 22" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
       </svg>
-      <div className="grid -rotate-4 gap-0.5 rounded-l-sm rounded-r-xl bg-carbon bg-[radial-gradient(circle_at_0.65rem_50%,var(--color-form-shade)_0.3rem,transparent_0.35rem)] py-2 pr-3.5 pb-2.5 pl-6 text-form shadow-[0_6px_14px_-8px_rgb(21_23_26/0.55)]">
+      <div data-seal-tab className="grid -rotate-4 gap-0.5 rounded-l-sm rounded-r-xl bg-carbon bg-[radial-gradient(circle_at_0.65rem_50%,var(--color-form-shade)_0.3rem,transparent_0.35rem)] py-2 pr-3.5 pb-2.5 pl-6 text-form shadow-[0_6px_14px_-8px_rgb(21_23_26/0.55)]">
         <span className="text-[0.6875rem] font-bold tracking-[0.14em] uppercase">Seal</span>
         <span className={`${display} text-[1.625rem] leading-none font-extrabold tracking-[0.08em]`}>
           {commit ? `${commit}${dirty ? "+" : ""}` : "Unsealed"}
@@ -103,8 +103,8 @@ export default function Home() {
         </nav>
       </header>
 
-      <main id="bill">
-        <Shipment className="mx-auto max-w-sheet px-(--gutter)">
+      <Shipment>
+        <div className="mx-auto max-w-sheet px-(--gutter)">
           <h1
             className={`${display} mt-[clamp(1.25rem,3vh,2rem)] mb-[clamp(1rem,2.5vh,1.5rem)] flex items-center gap-[clamp(0.5rem,1.5vw,1.5rem)] text-[clamp(2.75rem,10vw,8.5rem)] leading-[0.8] font-black tracking-[-0.01em] text-ink [font-variation-settings:'opsz'_72]`}
           >
@@ -120,6 +120,7 @@ export default function Home() {
           </h1>
 
           <article
+            data-sheet
             className="tractor-feed bg-form px-[calc(var(--feed)+0.625rem)] pb-[clamp(2rem,4vw,3rem)] sheet:px-[calc(var(--feed)+clamp(0.75rem,2.5vw,2.25rem))]"
             aria-labelledby="bill-title"
           >
@@ -221,8 +222,14 @@ export default function Home() {
                 {cargo.map((line, i) => (
                   <li
                     key={i}
-                    className="grid grid-cols-[3rem_minmax(0,1fr)] items-start gap-x-3 gap-y-2 border-b border-carbon-rule py-[1.375rem] text-[1.0625rem] sheet:grid-cols-[4.5rem_minmax(0,1.1fr)_minmax(0,1.1fr)_minmax(0,0.8fr)_minmax(0,2fr)] sheet:items-center sheet:gap-4"
+                    data-print-line
+                    className="relative grid grid-cols-[3rem_minmax(0,1fr)] items-start gap-x-3 gap-y-2 border-b border-carbon-rule py-[1.375rem] text-[1.0625rem] sheet:grid-cols-[4.5rem_minmax(0,1.1fr)_minmax(0,1.1fr)_minmax(0,0.8fr)_minmax(0,2fr)] sheet:items-center sheet:gap-4"
                   >
+                    <span
+                      data-print-head
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-y-3 -left-1.5 w-1.5 bg-carbon opacity-0"
+                    />
                     <span className={`${display} row-span-4 text-[1.75rem] leading-none font-extrabold text-carbon sheet:row-span-1`}>
                       {String(i + 1).padStart(3, "0")}
                     </span>
@@ -247,7 +254,7 @@ export default function Home() {
               </p>
             </section>
           </article>
-        </Shipment>
+        </div>
 
         <section
           id="consign"
@@ -256,6 +263,7 @@ export default function Home() {
         >
           <h2
             id="consign-title"
+            data-spray
             className={`${display} mt-0 mb-6 max-w-[10ch] text-[clamp(3.5rem,9vw,8rem)] leading-[0.85] font-black text-ink [font-variation-settings:'opsz'_72]`}
           >
             Consign the next one
@@ -278,7 +286,7 @@ export default function Home() {
             </ul>
           )}
         </section>
-      </main>
+      </Shipment>
 
       <footer className="ink-steel mx-auto flex w-[min(100%-2*var(--gutter),var(--container-sheet)-2*var(--gutter))] flex-wrap justify-between gap-x-8 gap-y-2 border-t-2 border-ink pt-5 pb-8 text-sm font-medium text-ink [&_p]:m-0">
         <p>

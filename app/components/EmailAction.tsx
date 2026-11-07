@@ -77,7 +77,9 @@ export function EmailAction({ email, tone = "form" }: { email: string | null; to
           onClick={copyAddress}
         >
           <CopyIcon />
-          {copy === "copied" ? "Copied" : copy === "failed" ? "Copy failed, select the address" : "Copy address"}
+          <span key={copy} className={copy === "idle" ? undefined : "inline-block animate-stamp-in motion-reduce:animate-none"}>
+            {copy === "copied" ? "Copied" : copy === "failed" ? "Copy failed, select the address" : "Copy address"}
+          </span>
         </button>
         <span className="sr-only" aria-live="polite">
           {copy === "copied" ? "Address copied to clipboard" : ""}
