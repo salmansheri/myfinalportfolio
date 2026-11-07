@@ -258,6 +258,11 @@ The one call to action, drawn as a solid stencil-ink slab.
 ### Seal Tag
 - **Style:** carbon tab with form-white text (label caps, stencil number, small note) hanging from a carbon cable SVG, carrying the live commit hash or "Unsealed".
 
+### Stowage Plan (homepage skills)
+- **Layout:** four holds as numbered form fields (H1–H4: Data, API & services, Interface, Infrastructure) in one row from `wide:`, two-up from `sheet:`, stacked below. Sits on the bill between Description of goods and Containers loaded, and prints as one line.
+- **Skill entry:** the skill name in semibold body text; under it, at label size, the container numbers of every project whose stack names that skill, each linking to its place on the packing list. Matching is case-insensitive on the declared stack, so proof is derived, never typed.
+- **Rule:** no levels, bars, stars or percentages. An empty hold is an AWAITING stamp.
+
 ### Container Line (homepage)
 - **Style:** the "Containers loaded" block on the bill uses the same line rhythm as the Manifest Line, on a four-column template: container number, contents, status stamp, and a carbon "Packing list" link with an arrow that nudges 4px on hover. Prints like a cargo line.
 

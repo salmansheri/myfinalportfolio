@@ -37,6 +37,11 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 
 The seal tag carries the deployed commit hash: the page proves it was shipped.
 
+## Later additions
+
+- Containers loaded: one line per project, linking to the packing list at /projects.
+- Stowage plan: skills by layer in four holds, each skill linked to the projects whose stack uses it; data in app/skills-data.ts.
+
 ## Unresolved
 
 Owner identity, intro copy, roles, contact channels; contents of `/experience` and `/about`.

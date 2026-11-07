@@ -17,6 +17,7 @@ import {
   SiteHeader,
 } from "./components/site";
 import { ConsignSection } from "./components/ConsignSection";
+import { StowagePlan } from "./components/StowagePlan";
 
 const lineCell =
   "col-start-2 flex items-center gap-3 before:min-w-[5.5rem] before:text-[0.6875rem] before:font-semibold before:tracking-[0.08em] before:text-carbon before:uppercase before:content-[attr(data-label)] sheet:col-start-auto sheet:block sheet:before:hidden";
@@ -195,6 +196,8 @@ export default function Home() {
                 Further lines awaiting. Every line is filled in by the shipper; nothing on this bill is estimated.
               </p>
             </section>
+
+            <StowagePlan />
 
             <section id="containers" className="mt-[clamp(2.5rem,4vw,3.5rem)] scroll-mt-8" aria-labelledby="containers-title">
               <SheetHead id="containers-title" title="Containers loaded" large>
