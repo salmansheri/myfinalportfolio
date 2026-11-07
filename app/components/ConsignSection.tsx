@@ -10,23 +10,23 @@ function ProfileIcon({ href }: { href: string }) {
   return <Icon weight="bold" aria-hidden="true" className="size-6 flex-none" />;
 }
 
-// The closing band on bare steel: the stencilled call to send work, and the way to send it
+// The closing band on bare steel: the invitation to get in touch, and the ways to do it
 export function ConsignSection() {
   return (
     <section
-      id="consign"
+      id="contact"
       className="ink-steel mx-auto max-w-sheet scroll-mt-4 px-(--gutter) pt-[clamp(5rem,12vw,9rem)] pb-[clamp(4rem,8vw,6rem)]"
-      aria-labelledby="consign-title"
+      aria-labelledby="contact-title"
     >
       <h2
-        id="consign-title"
+        id="contact-title"
         data-spray
         className={`${display} mt-0 mb-6 max-w-[10ch] text-[clamp(3.5rem,9vw,8rem)] leading-[0.85] font-black text-ink [font-variation-settings:'opsz'_72]`}
       >
-        Consign the next one
+        Let&rsquo;s work together
       </h2>
       <p className="mt-0 mb-10 max-w-[44ch] text-[clamp(1.125rem,1.6vw,1.375rem)] leading-[1.45] font-medium text-ink">
-        A role, a project, a studio build. Send the brief and it goes from schema to screen in one pair of hands.
+        Hiring for a role, or need a project built? Send me the details and I&rsquo;ll take it from the database to the interface.
       </p>
       <div className="max-w-120">
         <EmailAction email={shipper.email} tone="steel" />

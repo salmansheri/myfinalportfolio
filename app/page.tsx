@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cargo, declaredLines, shipper } from "@/data/manifest";
-import { containerNumber, declaredProjects, projects } from "@/data/projects";
+import { declaredProjects, projects } from "@/data/projects";
 import { Awaiting, Field, StatusStamp } from "./components/Awaiting";
 import { EmailAction } from "./components/EmailAction";
 import { Shipment } from "./components/Shipment";
@@ -9,7 +9,6 @@ import {
   bigValue,
   commit,
   commitNote,
-  ContainerCode,
   display,
   FormField,
   formLabel,
@@ -47,7 +46,7 @@ function SealTag() {
         <path d="M2 6c18 0 26 30 60 22" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
       </svg>
       <div data-seal-tab className="grid -rotate-4 gap-0.5 rounded-l-sm rounded-r-xl bg-carbon bg-[radial-gradient(circle_at_0.65rem_50%,var(--color-form-shade)_0.3rem,transparent_0.35rem)] py-2 pr-3.5 pb-2.5 pl-6 text-form shadow-[0_6px_14px_-8px_rgb(21_23_26/0.55)]">
-        <span className="text-[0.6875rem] font-bold tracking-[0.14em] uppercase">Seal</span>
+        <span className="text-[0.6875rem] font-bold tracking-[0.14em] uppercase">Version</span>
         <span className={`${display} text-[1.625rem] leading-none font-extrabold tracking-[0.08em]`}>
           {commit ?? "Unsealed"}
         </span>
@@ -81,19 +80,14 @@ export default function Home() {
           <article
             data-sheet
             className="tractor-feed bg-form px-[calc(var(--feed)+0.625rem)] pb-[clamp(2rem,4vw,3rem)] sheet:px-[calc(var(--feed)+clamp(0.75rem,2.5vw,2.25rem))]"
-            aria-labelledby="bill-title"
+            aria-labelledby="about-title"
           >
-            <SheetHead id="bill-title" title="Bill of lading">
-              <p className="m-0 flex gap-4 text-xs tracking-[0.04em] text-carbon uppercase sheet:gap-6 sheet:text-sm">
-                <span>Non-negotiable</span>
-                <span>Original</span>
-              </p>
-            </SheetHead>
+            <SheetHead id="about-title" title="About" />
 
             <dl className="m-0 grid grid-cols-1 border-l border-carbon-rule sheet:grid-cols-24">
               <FormField
                 n="01"
-                label="Shipper"
+                label="Name"
                 className="order-0 sheet:col-[1/15] wide:col-[1/11]"
                 valueClassName="flex items-center gap-4"
               >
@@ -112,19 +106,19 @@ export default function Home() {
                 <Field value={shipper.location} what="Location" tilt={2} />
               </FormField>
 
-              <FormField n="03" label="Port of loading" className="order-2 sheet:order-none sheet:col-[1/9] wide:col-[1/7]" valueClassName={bigValue}>
+              <FormField n="03" label="From" className="order-2 sheet:order-none sheet:col-[1/9] wide:col-[1/7]" valueClassName={bigValue}>
                 Database
               </FormField>
-              <FormField n="04" label="Via" className="order-2 sheet:order-none sheet:col-[9/17] wide:col-[7/12]" valueClassName={bigValue}>
+              <FormField n="04" label="Through" className="order-2 sheet:order-none sheet:col-[9/17] wide:col-[7/12]" valueClassName={bigValue}>
                 API &amp; services
               </FormField>
-              <FormField n="05" label="Port of discharge" className="order-2 sheet:order-none sheet:col-[17/25] wide:col-[12/17]" valueClassName={bigValue}>
+              <FormField n="05" label="To" className="order-2 sheet:order-none sheet:col-[17/25] wide:col-[12/17]" valueClassName={bigValue}>
                 Interface
               </FormField>
 
               <FormField
                 n="06"
-                label="Transshipment"
+                label="Handoffs"
                 className="order-2 sheet:order-none sheet:col-[1/13] wide:col-[1/9]"
                 valueClassName="flex flex-wrap items-center gap-5 sheet:flex-nowrap"
               >
@@ -137,7 +131,7 @@ export default function Home() {
                 <span className="max-w-[34ch] font-medium">One pair of hands from the first table to the last pixel.</span>
               </FormField>
 
-              <FormField n="07" label="Accepting" className="order-2 sheet:order-none sheet:col-[13/25] wide:col-[9/17]">
+              <FormField n="07" label="Open to" className="order-2 sheet:order-none sheet:col-[13/25] wide:col-[9/17]">
                 <ul className="m-0 flex list-none flex-wrap gap-x-5 gap-y-1.5 p-0 font-semibold">
                   <li className="check-box">Full-time roles</li>
                   <li className="check-box">Freelance projects</li>
@@ -145,26 +139,26 @@ export default function Home() {
                 </ul>
               </FormField>
 
-              {/* The action follows the shipper's name on phones, not seven fields later */}
+              {/* The action follows the name on phones, not seven fields later */}
               <FormField
                 n="08"
-                label={<>Shipper&rsquo;s signature</>}
+                label="Contact"
                 className="order-1 bg-form-shade sheet:order-none sheet:col-[1/25] sheet:row-2 wide:col-[17/25] wide:row-[1/4]"
                 valueClassName="grid gap-5 sheet:grid-cols-[minmax(0,1fr)_auto] sheet:items-end wide:grid-cols-1 wide:items-stretch"
               >
                 <span className={`${display} block min-h-14 border-b border-ink pt-3 pb-2 text-[1.75rem] font-bold sheet:col-span-full`}>
-                  <Field value={shipper.name} what="Signature name" tilt={-2} />
+                  <Field value={shipper.name} what="Name" tilt={-2} />
                 </span>
                 <EmailAction email={shipper.email} />
                 <SealTag />
               </FormField>
             </dl>
 
-            <section id="cargo" className="mt-[clamp(1.5rem,2.5vw,2rem)] scroll-mt-8" aria-labelledby="cargo-title">
-              <SheetHead id="cargo-title" title="Description of goods" large>
+            <section id="experience" className="mt-[clamp(1.5rem,2.5vw,2rem)] scroll-mt-8" aria-labelledby="experience-title">
+              <SheetHead id="experience-title" title="Experience" large>
                 <p className="m-0 flex items-center gap-2.5 text-sm font-semibold tracking-[0.06em] text-carbon uppercase">
-                  Lines declared{" "}
-                  {declaredLines > 0 ? <strong>{declaredLines}</strong> : <Awaiting what="Line count" tilt={-2} />}
+                  Roles{" "}
+                  {declaredLines > 0 ? <strong>{declaredLines}</strong> : <Awaiting what="Number of roles" tilt={-2} />}
                 </p>
               </SheetHead>
 
@@ -172,11 +166,11 @@ export default function Home() {
                 className={`hidden border-b border-carbon-rule py-2.5 sheet:grid sheet:grid-cols-[4.5rem_minmax(0,1.1fr)_minmax(0,1.1fr)_minmax(0,0.8fr)_minmax(0,2fr)] sheet:gap-4 ${formLabel}`}
                 aria-hidden="true"
               >
-                <span>Line</span>
-                <span>Consignee</span>
-                <span>Goods</span>
+                <span>#</span>
+                <span>Company</span>
+                <span>Role</span>
                 <span>Period</span>
-                <span>Shipped</span>
+                <span>What I shipped</span>
               </div>
 
               <ol className="m-0 list-none p-0">
@@ -192,18 +186,18 @@ export default function Home() {
                       className="pointer-events-none absolute inset-y-3 -left-1.5 w-1.5 bg-carbon opacity-0"
                     />
                     <span className={`${display} row-span-4 text-[1.75rem] leading-none font-extrabold text-carbon sheet:row-span-1`}>
-                      {String(i + 1).padStart(3, "0")}
+                      {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className={lineCell} data-label="Consignee">
+                    <span className={lineCell} data-label="Company">
                       <Field value={line.company} what="Company" tilt={i % 2 ? 2 : -2} />
                     </span>
-                    <span className={lineCell} data-label="Goods">
+                    <span className={lineCell} data-label="Role">
                       <Field value={line.role} what="Role" tilt={i % 2 ? -3 : 3} />
                     </span>
                     <span className={lineCell} data-label="Period">
                       <Field value={line.period} what="Dates" tilt={-1} />
                     </span>
-                    <span className={lineCell} data-label="Shipped">
+                    <span className={lineCell} data-label="What I shipped">
                       <Field value={line.shipped} what="What was shipped" tilt={1} />
                     </span>
                   </li>
@@ -211,28 +205,28 @@ export default function Home() {
               </ol>
 
               <p className="mt-5 mb-0 max-w-[60ch] text-[0.9375rem] text-ink-soft">
-                Further lines awaiting. Every line is filled in by the shipper; nothing on this bill is estimated.
+                Newest first. Every role listed here is one I have actually held.
               </p>
             </section>
 
             <StowagePlan />
 
-            <section id="containers" className="mt-[clamp(2.5rem,4vw,3.5rem)] scroll-mt-8" aria-labelledby="containers-title">
-              <SheetHead id="containers-title" title="Containers loaded" large>
+            <section id="projects" className="mt-[clamp(2.5rem,4vw,3.5rem)] scroll-mt-8" aria-labelledby="projects-title">
+              <SheetHead id="projects-title" title="Projects" large>
                 <p className="m-0 flex items-center gap-2.5 text-sm font-semibold tracking-[0.06em] text-carbon uppercase">
-                  Containers declared{" "}
-                  {declaredProjects > 0 ? <strong>{declaredProjects}</strong> : <Awaiting what="Container count" tilt={2} />}
+                  Projects{" "}
+                  {declaredProjects > 0 ? <strong>{declaredProjects}</strong> : <Awaiting what="Number of projects" tilt={2} />}
                 </p>
               </SheetHead>
 
               <div
-                className={`hidden border-b border-carbon-rule py-2.5 sheet:grid sheet:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)_minmax(0,0.8fr)_auto] sheet:gap-4 ${formLabel}`}
+                className={`hidden border-b border-carbon-rule py-2.5 sheet:grid sheet:grid-cols-[4.5rem_minmax(0,2fr)_minmax(0,0.8fr)_auto] sheet:gap-4 ${formLabel}`}
                 aria-hidden="true"
               >
-                <span>Container no.</span>
-                <span>Contents</span>
+                <span>#</span>
+                <span>Project</span>
                 <span>Status</span>
-                <span className="sr-only">Packing list</span>
+                <span className="sr-only">Details</span>
               </div>
 
               <ol className="m-0 list-none p-0">
@@ -240,14 +234,16 @@ export default function Home() {
                   <li
                     key={project.slug}
                     data-print-line
-                    className="relative grid grid-cols-1 gap-y-2.5 border-b border-carbon-rule py-[1.375rem] text-[1.0625rem] sheet:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)_minmax(0,0.8fr)_auto] sheet:items-center sheet:gap-4"
+                    className="relative grid grid-cols-1 gap-y-2.5 border-b border-carbon-rule py-[1.375rem] text-[1.0625rem] sheet:grid-cols-[4.5rem_minmax(0,2fr)_minmax(0,0.8fr)_auto] sheet:items-center sheet:gap-4"
                   >
                     <span
                       data-print-head
                       aria-hidden="true"
                       className="pointer-events-none absolute inset-y-3 -left-1.5 w-1.5 bg-carbon opacity-0"
                     />
-                    <ContainerCode code={containerNumber(i)} className="text-[1.375rem] text-carbon" />
+                    <span className={`${display} text-[1.75rem] leading-none font-extrabold text-carbon`}>
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
                     <span className="font-semibold">
                       <Field value={project.name} what="Project name" tilt={i % 2 ? 2 : -2} />
                     </span>
@@ -258,7 +254,7 @@ export default function Home() {
                       href={`/projects#${project.slug}`}
                       className="group inline-flex items-center gap-2 font-semibold text-carbon underline decoration-carbon-rule underline-offset-4 transition-colors duration-[160ms] hover:decoration-carbon"
                     >
-                      Packing list
+                      Details
                       <svg
                         className="size-4 flex-none transition-transform duration-[220ms] ease-out-expo group-hover:translate-x-1"
                         viewBox="0 0 24 24"

@@ -9,6 +9,11 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const ease = "expo.out";
 
+// Play once and never reverse. Not `once: true`: a trigger that kills itself while ScrollTrigger
+// is still setting up later triggers empties a slot in its list and throws
+// ("can't access property 'end', curTrigger is undefined").
+const playOnce = "play none none none";
+
 // All motion on the page, told in the manifest's own mechanics:
 // the bill feeds in like tractor paper, cargo lines print under a moving head,
 // the closing line is sprayed through a stencil, and the seal swings on its cable.
@@ -49,7 +54,7 @@ export function Shipment({ children, className }: { children: React.ReactNode; c
         gsap.utils.toArray<HTMLElement>("[data-print-line]").forEach((line) => {
           const head = line.querySelector("[data-print-head]");
           gsap
-            .timeline({ scrollTrigger: { trigger: line, start: "top bottom", once: true } })
+            .timeline({ scrollTrigger: { trigger: line, start: "top bottom", toggleActions: playOnce } })
             .set(head, { opacity: 1 })
             .from(line, { clipPath: "inset(0 100% 0 0)", duration: 0.75, ease: "steps(32)" }, 0)
             .fromTo(head, { x: 0 }, { x: () => line.clientWidth, duration: 0.75, ease: "steps(32)" }, 0)
@@ -72,7 +77,7 @@ export function Shipment({ children, className }: { children: React.ReactNode; c
               duration: 0.9,
               ease: "power2.out",
               clearProps: "maskImage,maskSize,maskPosition,opacity",
-              scrollTrigger: { trigger: el, start: "top 80%", once: true },
+              scrollTrigger: { trigger: el, start: "top 80%", toggleActions: playOnce },
             },
           );
         });

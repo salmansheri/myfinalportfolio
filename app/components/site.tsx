@@ -2,7 +2,7 @@ import Link from "next/link";
 import { shipper } from "@/data/manifest";
 import { Awaiting } from "./Awaiting";
 
-// Shared pieces of the manifest: type voices, the build seal, header, footer and form fields.
+// Shared pieces of the site: type voices, the build version, header, footer and form fields.
 
 export const display = "font-display uppercase";
 export const formLabel = "text-xs font-semibold tracking-[0.08em] uppercase text-carbon";
@@ -15,27 +15,20 @@ export const commitNote = !sha
   ? "Built outside version control"
   : dirty
     ? "Uncommitted changes on top of this commit"
-    : "Commit this page shipped from";
-const billNumber = commit ? `MNF-${commit}`.toUpperCase() : null;
+    : "The commit this site was built from";
 
 const navLinks = [
-  ["/#cargo", "Experience"],
+  ["/#experience", "Experience"],
   ["/projects", "Projects"],
-  ["/#consign", "Contact"],
+  ["/#contact", "Contact"],
 ] as const;
 
 export function SiteHeader() {
   return (
     <header className="ink-steel mx-auto flex max-w-sheet flex-wrap items-start justify-between gap-x-4 gap-y-3 px-(--gutter) pt-5 sheet:items-center">
-      <p className="m-0 flex flex-col gap-0.5 sheet:flex-row sheet:flex-wrap sheet:items-baseline sheet:gap-x-5 sheet:gap-y-1">
-        <Link className={`${display} text-[1.75rem] font-extrabold tracking-[0.04em] text-ink no-underline`} href="/">
-          Manifest
-        </Link>
-        <span className={`${display} text-base font-bold tracking-[0.08em] whitespace-nowrap sheet:text-xl`}>
-          <span className="font-sans text-xs font-semibold tracking-[0.08em]">Bill no.</span>{" "}
-          {billNumber ?? <Awaiting what="Bill number" tilt={-2} />}
-        </span>
-      </p>
+      <Link className={`${display} text-[1.75rem] font-extrabold tracking-[0.04em] text-ink no-underline`} href="/">
+        {shipper.name ?? "Portfolio"}
+      </Link>
       <nav aria-label="Primary">
         <ul className="m-0 flex list-none gap-[clamp(1rem,3vw,2.25rem)] p-0">
           {navLinks.map(([href, label]) => (
@@ -58,16 +51,16 @@ export function SiteFooter() {
   return (
     <footer className="ink-steel mx-auto flex w-[min(100%-2*var(--gutter),var(--container-sheet)-2*var(--gutter))] flex-wrap justify-between gap-x-8 gap-y-2 border-t-2 border-ink pt-5 pb-8 text-sm font-medium text-ink [&_p]:m-0">
       <p>
-        Designed, built and shipped by {shipper.name ?? <Awaiting what="Shipper name" tilt={-2} />}
+        Designed, built and shipped by {shipper.name ?? <Awaiting what="Name" tilt={-2} />}
       </p>
       <p>
-        Seal <strong>{commit ?? "unsealed"}</strong> · Next.js
+        Version <strong>{commit ?? "unversioned"}</strong> · Built with Next.js
       </p>
     </footer>
   );
 }
 
-// The heading row of a printed form: its title, and its particulars on the right
+// The heading row of a section: its title, and an optional count on the right
 export function SheetHead({
   id,
   title,
@@ -76,7 +69,7 @@ export function SheetHead({
 }: {
   id: string;
   title: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   large?: boolean;
 }) {
   return (
@@ -124,24 +117,5 @@ export function FormField({
       </dt>
       <dd className={`m-0 text-[1.0625rem] leading-[1.4] ${valueClassName}`}>{children}</dd>
     </div>
-  );
-}
-
-// An ISO 6346 container number, check digit boxed as it is painted on the doors
-export function ContainerCode({
-  code,
-  className = "",
-}: {
-  code: { owner: string; serial: string; check: number };
-  className?: string;
-}) {
-  return (
-    <span className={`${display} inline-flex items-center gap-[0.3em] font-extrabold tracking-[0.06em] whitespace-nowrap ${className}`}>
-      <span>{code.owner}</span>
-      <span>{code.serial}</span>
-      <span className="inline-grid min-w-[1.1em] place-items-center border-2 border-current px-[0.12em] leading-[1.05]">
-        {code.check}
-      </span>
-    </span>
   );
 }

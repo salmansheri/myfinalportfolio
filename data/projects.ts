@@ -1,4 +1,4 @@
-// Every project on the packing list lives here.
+// Every project on the Projects page lives here.
 // `null` renders as an AWAITING stamp: fill these in, never invent them.
 // Screenshots go in public/projects/ and are referenced as "/projects/<file>".
 
@@ -18,7 +18,7 @@ export type Project = {
   image: { src: string; alt: string } | null;
 };
 
-// One open container until the first project is filled in.
+// Listed in this order on the homepage and the Projects page.
 export const projects: Project[] = [
   {
     slug: "project-1",
@@ -31,24 +31,28 @@ export const projects: Project[] = [
     repo: "https://github.com/salmansheri/messenger",
     image: null,
   },
+  {
+    slug: "project-2",
+    name: "WriteIt A Journal application",
+    summary: "A real-time journaling application built with Nextjs allowing users to create and manage their journal entries instantly.",
+    built: null,
+    stack: ["Nextjs",  "PostgreSQL"],
+    status: "Live",
+    live: "https://write-it-by-salman.vercel.app/",
+    repo: "https://github.com/salmansheri/Journal-app-by-salman",
+    image: { src: "/projects/writeit.png", alt: "Screenshot of WriteIt application" },
+  },
+    {
+    slug: "project-3",
+    name: "Clinic Manager",
+    summary: "A clinic management application built with Nextjs, allowing users to manage patient records, appointments, and billing.",
+    built: null,
+    stack: ["Nextjs",  "PostgreSQL"],
+    status: "Live",
+    live: "https://clinic-manager-nu.vercel.app/",
+    repo: "https://github.com/salmansheri/clinic_manager",
+    image: { src: "/projects/clinic.png", alt: "Screenshot of Clinic Manager application" },
+  },
 ];
 
 export const declaredProjects = projects.filter((p) => p.name).length;
-
-// ISO 6346 container number: owner code, category U, six-digit serial and a check digit.
-// It is a numbering scheme for the list, not a claim about the project.
-const letterValues: Record<string, number> = Object.fromEntries(
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").reduce<[string, number][]>((acc, letter) => {
-    let value = acc.length ? acc[acc.length - 1][1] + 1 : 10;
-    if (value % 11 === 0) value += 1;
-    return [...acc, [letter, value]];
-  }, []),
-);
-
-export function containerNumber(index: number) {
-  const owner = "MNFU";
-  const serial = String(index + 1).padStart(6, "0");
-  const chars = (owner + serial).split("");
-  const sum = chars.reduce((total, ch, i) => total + (letterValues[ch] ?? Number(ch)) * 2 ** i, 0);
-  return { owner, serial, check: (sum % 11) % 10 };
-}

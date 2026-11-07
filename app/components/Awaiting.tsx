@@ -35,8 +35,8 @@ export function Field<T>({
   return <>{children ? children(value) : String(value)}</>;
 }
 
-// A project's status, stamped the way freight is: live goods have shipped, the rest are in transit
+// A project's status, stamped: live, or still in progress
 export function StatusStamp({ status, tilt = -3 }: { status: "Live" | "In progress" | null; tilt?: number }) {
   if (!status) return <Awaiting what="Status" tilt={tilt} />;
-  return <Stamp tilt={tilt}>{status === "Live" ? "Live" : "In transit"}</Stamp>;
+  return <Stamp tilt={tilt}>{status === "Live" ? "Live" : "In progress"}</Stamp>;
 }

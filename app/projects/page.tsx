@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { containerNumber, declaredProjects, layers, projects, type Project } from "@/data/projects";
+import { declaredProjects, layers, projects, type Project } from "@/data/projects";
 import { shipper } from "@/data/manifest";
 import { Awaiting, Field, StatusStamp } from "../components/Awaiting";
 import { ConsignSection } from "../components/ConsignSection";
 import { Shipment } from "../components/Shipment";
-import { bigValue, ContainerCode, display, FormField, formLabel, SheetHead, SiteFooter, SiteHeader } from "../components/site";
+import { bigValue, display, FormField, formLabel, SheetHead, SiteFooter, SiteHeader } from "../components/site";
 
 export const metadata: Metadata = {
-  title: "Packing list · Manifest",
-  description: "Projects built end to end, listed one container at a time.",
+  title: `Projects · ${shipper.name ?? "Portfolio"}`,
+  description: `Projects by ${shipper.name ?? "a full-stack engineer"}: what each one is, which parts were built, the tech stack, and links.`,
 };
 
 function ExternalIcon() {
@@ -21,7 +21,7 @@ function ExternalIcon() {
   );
 }
 
-function SealLink({ href, label, what }: { href: string | null; label: string; what: string }) {
+function ProjectLink({ href, label, what }: { href: string | null; label: string; what: string }) {
   return (
     <li className="flex items-center gap-3">
       <span className={`${formLabel} min-w-[6.5rem]`}>{label}</span>
@@ -43,8 +43,8 @@ function SealLink({ href, label, what }: { href: string | null; label: string; w
   );
 }
 
-// The screenshot, framed and captioned like an inspection photo pinned to the list
-function InspectionPhoto({ project, figure }: { project: Project; figure: string }) {
+// The screenshot, framed on a mat and captioned
+function Screenshot({ project, figure }: { project: Project; figure: string }) {
   return (
     <figure className="m-0 border border-carbon-rule bg-form-shade p-2">
       <div className="relative aspect-[16/10] overflow-hidden bg-form">
@@ -66,14 +66,14 @@ function InspectionPhoto({ project, figure }: { project: Project; figure: string
         <span>Fig. {figure}</span>
         <span aria-hidden="true">·</span>
         <span className="font-sans normal-case tracking-normal text-ink-soft">
-          {project.name ? `${project.name}, as shipped` : "Contents photograph awaiting"}
+          {project.name ?? "Screenshot awaiting"}
         </span>
       </figcaption>
     </figure>
   );
 }
 
-function Container({ project, index }: { project: Project; index: number }) {
+function ProjectEntry({ project, index }: { project: Project; index: number }) {
   const n = String(index + 1).padStart(2, "0");
   const titleId = `${project.slug}-title`;
 
@@ -91,15 +91,11 @@ function Container({ project, index }: { project: Project; index: number }) {
       />
 
       <div className="sheet:col-[1/13] wide:col-[1/12]">
-        <InspectionPhoto project={project} figure={n} />
+        <Screenshot project={project} figure={n} />
       </div>
 
       <dl className="m-0 grid grid-cols-1 self-start border-t border-l border-carbon-rule sheet:col-[13/25] sheet:grid-cols-2 wide:col-[12/25]">
-        <FormField n="01" label="Container no." className="sheet:col-span-2">
-          <ContainerCode code={containerNumber(index)} className="text-[clamp(1.625rem,2.4vw,2.125rem)] text-carbon" />
-        </FormField>
-
-        <FormField n="02" label="Contents" className="sheet:col-span-2">
+        <FormField n="01" label="Project" className="sheet:col-span-2">
           <h2 id={titleId} className={`${bigValue} m-0 mb-2`}>
             <Field value={project.name} what="Project name" tilt={-3} />
           </h2>
@@ -108,7 +104,7 @@ function Container({ project, index }: { project: Project; index: number }) {
           </p>
         </FormField>
 
-        <FormField n="03" label="Handled by the shipper">
+        <FormField n="02" label="What I built">
           {project.built ? (
             <ul className="m-0 grid list-none gap-1.5 p-0">
               {layers.map((layer) => {
@@ -126,18 +122,18 @@ function Container({ project, index }: { project: Project; index: number }) {
           )}
         </FormField>
 
-        <FormField n="04" label="Status" valueClassName="pt-1">
+        <FormField n="03" label="Status" valueClassName="pt-1">
           <StatusStamp status={project.status} tilt={-4} />
         </FormField>
 
-        <FormField n="05" label="Marks & numbers" className="sheet:col-span-2">
+        <FormField n="04" label="Tech stack" className="sheet:col-span-2">
           {project.stack ? <span className="font-semibold">{project.stack.join(" · ")}</span> : <Awaiting what="Stack" tilt={1} />}
         </FormField>
 
-        <FormField n="06" label="Seal" className="sheet:col-span-2">
+        <FormField n="05" label="Links" className="sheet:col-span-2">
           <ul className="m-0 grid list-none gap-2 p-0">
-            <SealLink href={project.live} label="Live site" what="Live site link" />
-            <SealLink href={project.repo} label="Repository" what="Repository link" />
+            <ProjectLink href={project.live} label="Live site" what="Live site link" />
+            <ProjectLink href={project.repo} label="Source code" what="Repository link" />
           </ul>
         </FormField>
       </dl>
@@ -155,38 +151,35 @@ export default function ProjectsPage() {
           <h1
             className={`${display} mt-[clamp(1.25rem,3vh,2rem)] mb-[clamp(0.75rem,2vh,1.25rem)] text-[clamp(2.75rem,10vw,8.5rem)] leading-[0.8] font-black tracking-[-0.01em] text-ink [font-variation-settings:'opsz'_72]`}
           >
-            Packing list
+            Projects
           </h1>
           <p className="ink-steel mt-0 mb-[clamp(1rem,2.5vh,1.5rem)] max-w-[52ch] text-[clamp(1.0625rem,1.4vw,1.25rem)] leading-[1.45] font-medium text-ink">
-            One container per project. The ticked boxes under Handled show which layers{" "}
-            {shipper.name ?? "the shipper"} built.
+            What each project is, which parts of it I built, the tech stack, and where to see it.
           </p>
 
           <article
             data-sheet
             className="tractor-feed bg-form px-[calc(var(--feed)+0.625rem)] pb-[clamp(2rem,4vw,3rem)] sheet:px-[calc(var(--feed)+clamp(0.75rem,2.5vw,2.25rem))]"
-            aria-label="Particulars of containers"
+            aria-labelledby="all-projects-title"
           >
-            <SheetHead id="containers-title" title="Particulars of containers">
+            <SheetHead id="all-projects-title" title="All projects">
               <p className="m-0 flex items-center gap-2.5 text-xs font-semibold tracking-[0.06em] text-carbon uppercase sheet:text-sm">
-                Containers declared{" "}
-                {declaredProjects > 0 ? <strong>{declaredProjects}</strong> : <Awaiting what="Container count" tilt={2} />}
+                Projects{" "}
+                {declaredProjects > 0 ? <strong>{declaredProjects}</strong> : <Awaiting what="Number of projects" tilt={2} />}
               </p>
             </SheetHead>
 
             {projects.map((project, i) => (
-              <Container key={project.slug} project={project} index={i} />
+              <ProjectEntry key={project.slug} project={project} index={i} />
             ))}
 
             <p className="mt-5 mb-0 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3 text-[0.9375rem] text-ink-soft">
-              <span className="max-w-[60ch]">
-                Further containers awaiting. Every container is declared by the shipper; nothing on this list is estimated.
-              </span>
+              <span className="max-w-[60ch]">Every project listed here is real and links to its source.</span>
               <Link
                 href="/"
                 className="font-semibold text-carbon underline decoration-carbon-rule underline-offset-4 transition-colors duration-[160ms] hover:decoration-carbon"
               >
-                Back to the bill of lading
+                Back to home
               </Link>
             </p>
           </article>

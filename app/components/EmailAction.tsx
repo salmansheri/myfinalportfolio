@@ -36,7 +36,7 @@ export function EmailAction({ email, tone = "form" }: { email: string | null; to
       <div className="grid gap-3.5">
         {/* An open line on the form until the address is filled in */}
         <a role="link" aria-disabled="true" className={`grid cursor-default gap-2 ${steel ? "text-ink" : "text-carbon"}`}>
-          <span className={actionType}>Email the shipper</span>
+          <span className={actionType}>Contact</span>
           <span className="flex items-end gap-3 border-b-[1.5px] border-current pb-1.5">
             <span className="text-xs font-semibold tracking-[0.08em] uppercase">address</span>
             <Awaiting what="Email address" tilt={-2} />
@@ -64,7 +64,7 @@ export function EmailAction({ email, tone = "form" }: { email: string | null; to
         }`}
         href={`mailto:${email}`}
       >
-        Email the shipper
+        Contact
         <ArrowIcon />
       </a>
       <p className={`flex flex-wrap items-center gap-x-3.5 gap-y-2 text-[0.9375rem] ${steel ? "text-ink" : "text-ink-soft"}`}>
