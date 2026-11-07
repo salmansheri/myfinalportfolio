@@ -248,6 +248,7 @@ The one call to action, drawn as a solid stencil-ink slab.
 - **Value:** body text, or title-size stencil for single-word values. The signature field is shaded form-shade and holds the signature line, the email action and the seal tag.
 
 ### AWAITING Stamp
+- **Base:** every stamp (AWAITING, LIVE, IN TRANSIT) is the shared `Stamp` component.
 - **Style:** stencil caps in a 2px `currentColor` border with 3px corners, coloured by `--stamp`, tilted by a per-instance `--tilt`, masked by the stamp-grain texture so the rubber shows voids.
 - **Behaviour:** renders wherever a fact is null; screen readers hear "<what> not supplied yet".
 
@@ -257,13 +258,25 @@ The one call to action, drawn as a solid stencil-ink slab.
 ### Seal Tag
 - **Style:** carbon tab with form-white text (label caps, stencil number, small note) hanging from a carbon cable SVG, carrying the live commit hash or "Unsealed".
 
+### Container Line (homepage)
+- **Style:** the "Containers loaded" block on the bill uses the same line rhythm as the Manifest Line, on a four-column template: container number, contents, status stamp, and a carbon "Packing list" link with an arrow that nudges 4px on hover. Prints like a cargo line.
+
+### Container Number
+- **Style:** an ISO 6346 code in carbon stencil: owner code `MNFU`, six-digit serial, and the check digit boxed in a 2px `currentColor` border, as painted on container doors. Generated from the project's position by `containerNumber()`; it is a numbering scheme, never a claim.
+
+### Packing List Container (`/projects`)
+- **Layout:** one container per project, carbon-rule bottom border between containers. From `sheet:` the inspection photo takes the left half and the fields the right; below 45rem they stack, photo first.
+- **Inspection photo:** the screenshot set in a 16:10 frame on form-shade with an 8px mat and a carbon-rule hairline, captioned "Fig. NN · <name>, as shipped" in label caps. Missing image: a dashed carbon-rule frame holding an AWAITING stamp.
+- **Fields:** six numbered form fields: 01 container number, 02 contents (project name as the section heading at title size, summary in ink-soft), 03 handled by the shipper (the four layers as ticked `check-box` or open `check-box-empty` items), 04 status stamp, 05 marks & numbers (the stack joined by middots, no pills), 06 seal (live site and repository as carbon underlined links with an out-arrow).
+- **Status stamp:** a Stamp reading LIVE or IN TRANSIT; AWAITING when unknown.
+
 ### Navigation
-- **Style:** two stencil 800 uppercase ink links on steel (1.25rem, 1.0625rem under 45rem). Hover draws a 2px ink underline (160ms ease-out).
+- **Style:** three stencil 800 uppercase ink links on steel (Experience, Projects, Contact; 1.25rem, 1.0625rem under 45rem), shared by every page through `SiteHeader`. Hover draws a 2px ink underline (160ms ease-out). Below 45rem the nav wraps under the Manifest plate.
 
 ### Motion
 All motion lives in `Shipment` (GSAP + ScrollTrigger) except the copy stamp, which is a CSS keyframe. Each piece plays once and comes from how a real manifest is made:
-- **Load timeline:** the bill feeds up three hole pitches in stepped ticks (`steps(3)`, 0.36s), the route line draws left to right, the arrowhead slides in, SCREEN sharpens from blur, the NONE stamp slams down, and the seal tag swings onto its cable (`expo.out`). Skipped when the tab is not visible at load. Scroll triggers are re-measured when the feed stops.
-- **Cargo lines print:** when a line's top enters the viewport, a 6px carbon print head passes left to right while the line is revealed behind it (`clip-path`, `steps(32)`, 0.75s), then the head fades.
+- **Load timeline:** only the parts present on a page join it (the packing list has the feed but no route, stamp or seal). The bill feeds up three hole pitches in stepped ticks (`steps(3)`, 0.36s), the route line draws left to right, the arrowhead slides in, SCREEN sharpens from blur, the NONE stamp slams down, and the seal tag swings onto its cable (`expo.out`). Skipped when the tab is not visible at load. Scroll triggers are re-measured when the feed stops.
+- **Lines print:** cargo lines, container lines and packing-list containers all print the same way. When one's top enters the viewport, a 6px carbon print head passes left to right while the line is revealed behind it (`clip-path`, `steps(32)`, 0.75s), then the head fades.
 - **Closing line is sprayed:** "Consign the next one" is revealed by a soft-edged mask travelling across the stencil lettering (0.9s, `power2.out`) when it reaches 80% of the viewport; the mask is cleared afterwards.
 - **Seal swings:** pointing at the seal tab swings it on its cable (-9°, 1°, -6°, back to its -4° rest, sine eases). GSAP folds the tab's CSS `rotate` into its transform, so swing angles are absolute.
 - **Copied stamp:** the copy button's result label lands like a rubber stamp (`animate-stamp-in`: 1.35× and faint to flat, 160ms).
@@ -314,6 +327,7 @@ Defined in `app/globals.css`:
 - `stamp-grain`: the rubber-stamp ink mask on the AWAITING and NONE stamps.
 - `ink-steel`: sets `--stamp` to stencil ink on bare orange regions (header, Consign band, footer).
 - `check-box`: the ticked carbon checkbox drawn before list items on the form.
+- `check-box-empty`: the same box left open in carbon-rule, for a layer a project did not include.
 
 ### Component snippets
 The component snippets in `.impeccable/design.json` are standalone plain-CSS references. Their `ds-*` class names are not in the codebase; the page uses the utilities above.

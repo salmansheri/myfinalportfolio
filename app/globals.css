@@ -85,6 +85,19 @@
   }
 }
 
+/* An open checkbox on the form, left unticked */
+@utility check-box-empty {
+  &::before {
+    content: "";
+    display: inline-block;
+    width: 0.7em;
+    height: 0.7em;
+    margin-right: 0.45em;
+    border: 1.5px solid var(--color-carbon-rule);
+    vertical-align: -0.05em;
+  }
+}
+
 /* A ticked checkbox on the form */
 @utility check-box {
   &::before {

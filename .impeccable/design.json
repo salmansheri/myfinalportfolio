@@ -256,6 +256,10 @@
       {
         "name": "check-box",
         "purpose": "Ticked carbon checkbox drawn before list items on the form."
+      },
+      {
+        "name": "check-box-empty",
+        "purpose": "Open carbon-rule checkbox for a layer a project did not include."
       }
     ]
   },

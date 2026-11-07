@@ -1,15 +1,23 @@
+import Link from "next/link";
 import { cargo, declaredLines, shipper } from "./manifest-data";
-import { Awaiting, Field } from "./components/Awaiting";
+import { containerNumber, declaredProjects, projects } from "./projects-data";
+import { Awaiting, Field, StatusStamp } from "./components/Awaiting";
 import { EmailAction } from "./components/EmailAction";
 import { Shipment } from "./components/Shipment";
+import {
+  bigValue,
+  commit,
+  commitNote,
+  ContainerCode,
+  display,
+  FormField,
+  formLabel,
+  SheetHead,
+  SiteFooter,
+  SiteHeader,
+} from "./components/site";
+import { ConsignSection } from "./components/ConsignSection";
 
-const commit = process.env.COMMIT_SHA || null;
-const dirty = process.env.COMMIT_DIRTY === "1";
-const billNumber = commit ? `MNF-${commit}${dirty ? "+" : ""}`.toUpperCase() : null;
-
-const display = "font-display uppercase";
-const formLabel = "text-xs font-semibold tracking-[0.08em] uppercase text-carbon";
-const bigValue = `${display} text-[clamp(1.75rem,2.6vw,2.5rem)] leading-none font-extrabold`;
 const lineCell =
   "col-start-2 flex items-center gap-3 before:min-w-[5.5rem] before:text-[0.6875rem] before:font-semibold before:tracking-[0.08em] before:text-carbon before:uppercase before:content-[attr(data-label)] sheet:col-start-auto sheet:block sheet:before:hidden";
 
@@ -30,43 +38,10 @@ function SealTag() {
       <div data-seal-tab className="grid -rotate-4 gap-0.5 rounded-l-sm rounded-r-xl bg-carbon bg-[radial-gradient(circle_at_0.65rem_50%,var(--color-form-shade)_0.3rem,transparent_0.35rem)] py-2 pr-3.5 pb-2.5 pl-6 text-form shadow-[0_6px_14px_-8px_rgb(21_23_26/0.55)]">
         <span className="text-[0.6875rem] font-bold tracking-[0.14em] uppercase">Seal</span>
         <span className={`${display} text-[1.625rem] leading-none font-extrabold tracking-[0.08em]`}>
-          {commit ? `${commit}${dirty ? "+" : ""}` : "Unsealed"}
+          {commit ?? "Unsealed"}
         </span>
-        <span className="text-xs">
-          {!commit
-            ? "Built outside version control"
-            : dirty
-              ? "Uncommitted changes on top of this commit"
-              : "Commit this page shipped from"}
-        </span>
+        <span className="text-xs">{commitNote}</span>
       </div>
-    </div>
-  );
-}
-
-// One numbered box on the bill of lading
-function FormField({
-  n,
-  label,
-  className,
-  valueClassName = "",
-  children,
-}: {
-  n: string;
-  label: React.ReactNode;
-  className: string;
-  valueClassName?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className={`m-0 min-w-0 border-r border-b border-carbon-rule px-4 pt-3 pb-4 ${className}`}>
-      <dt className={`mb-2.5 flex items-center gap-2 ${formLabel}`}>
-        <span className="inline-grid min-w-[1.75em] place-items-center border border-carbon px-[0.2em] py-[0.1em] font-bold tracking-normal">
-          {n}
-        </span>
-        {label}
-      </dt>
-      <dd className={`m-0 text-[1.0625rem] leading-[1.4] ${valueClassName}`}>{children}</dd>
     </div>
   );
 }
@@ -74,34 +49,7 @@ function FormField({
 export default function Home() {
   return (
     <>
-      <header className="ink-steel mx-auto flex max-w-sheet flex-wrap items-start justify-between gap-4 px-(--gutter) pt-5 sheet:items-center">
-        <p className="m-0 flex flex-col gap-0.5 sheet:flex-row sheet:flex-wrap sheet:items-baseline sheet:gap-x-5 sheet:gap-y-1">
-          <a className={`${display} text-[1.75rem] font-extrabold tracking-[0.04em] text-ink no-underline`} href="#bill">
-            Manifest
-          </a>
-          <span className={`${display} text-base font-bold tracking-[0.08em] whitespace-nowrap sheet:text-xl`}>
-            <span className="font-sans text-xs font-semibold tracking-[0.08em]">Bill no.</span>{" "}
-            {billNumber ?? <Awaiting what="Bill number" tilt={-2} />}
-          </span>
-        </p>
-        <nav aria-label="Primary">
-          <ul className="m-0 flex list-none gap-[clamp(1rem,3vw,2.25rem)] p-0">
-            {[
-              ["#cargo", "Experience"],
-              ["#consign", "Contact"],
-            ].map(([href, label]) => (
-              <li key={href}>
-                <a
-                  href={href}
-                  className={`${display} border-b-2 border-transparent text-[1.0625rem] font-extrabold tracking-[0.06em] text-ink no-underline transition-colors duration-[160ms] ease-out hover:border-ink sheet:text-xl`}
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </header>
+      <SiteHeader />
 
       <Shipment>
         <div className="mx-auto max-w-sheet px-(--gutter)">
@@ -124,15 +72,12 @@ export default function Home() {
             className="tractor-feed bg-form px-[calc(var(--feed)+0.625rem)] pb-[clamp(2rem,4vw,3rem)] sheet:px-[calc(var(--feed)+clamp(0.75rem,2.5vw,2.25rem))]"
             aria-labelledby="bill-title"
           >
-            <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b-[3px] border-ink pt-[clamp(1rem,2vw,1.375rem)] pb-2.5">
-              <h2 id="bill-title" className={`${display} m-0 text-[clamp(1.75rem,3vw,2.5rem)] leading-none font-extrabold tracking-[0.02em]`}>
-                Bill of lading
-              </h2>
+            <SheetHead id="bill-title" title="Bill of lading">
               <p className="m-0 flex gap-4 text-xs tracking-[0.04em] text-carbon uppercase sheet:gap-6 sheet:text-sm">
                 <span>Non-negotiable</span>
                 <span>Original</span>
               </p>
-            </div>
+            </SheetHead>
 
             <dl className="m-0 grid grid-cols-1 border-l border-carbon-rule sheet:grid-cols-24">
               <FormField n="01" label="Shipper" className="order-0 sheet:col-[1/15] wide:col-[1/11]">
@@ -197,15 +142,12 @@ export default function Home() {
             </dl>
 
             <section id="cargo" className="mt-[clamp(1.5rem,2.5vw,2rem)] scroll-mt-8" aria-labelledby="cargo-title">
-              <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b-[3px] border-ink pb-3">
-                <h2 id="cargo-title" className={`${display} m-0 text-[clamp(2.25rem,3.6vw,2.875rem)] leading-[0.95] font-extrabold`}>
-                  Description of goods
-                </h2>
+              <SheetHead id="cargo-title" title="Description of goods" large>
                 <p className="m-0 flex items-center gap-2.5 text-sm font-semibold tracking-[0.06em] text-carbon uppercase">
                   Lines declared{" "}
                   {declaredLines > 0 ? <strong>{declaredLines}</strong> : <Awaiting what="Line count" tilt={-2} />}
                 </p>
-              </div>
+              </SheetHead>
 
               <div
                 className={`hidden border-b border-carbon-rule py-2.5 sheet:grid sheet:grid-cols-[4.5rem_minmax(0,1.1fr)_minmax(0,1.1fr)_minmax(0,0.8fr)_minmax(0,2fr)] sheet:gap-4 ${formLabel}`}
@@ -253,50 +195,68 @@ export default function Home() {
                 Further lines awaiting. Every line is filled in by the shipper; nothing on this bill is estimated.
               </p>
             </section>
+
+            <section id="containers" className="mt-[clamp(2.5rem,4vw,3.5rem)] scroll-mt-8" aria-labelledby="containers-title">
+              <SheetHead id="containers-title" title="Containers loaded" large>
+                <p className="m-0 flex items-center gap-2.5 text-sm font-semibold tracking-[0.06em] text-carbon uppercase">
+                  Containers declared{" "}
+                  {declaredProjects > 0 ? <strong>{declaredProjects}</strong> : <Awaiting what="Container count" tilt={2} />}
+                </p>
+              </SheetHead>
+
+              <div
+                className={`hidden border-b border-carbon-rule py-2.5 sheet:grid sheet:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)_minmax(0,0.8fr)_auto] sheet:gap-4 ${formLabel}`}
+                aria-hidden="true"
+              >
+                <span>Container no.</span>
+                <span>Contents</span>
+                <span>Status</span>
+                <span className="sr-only">Packing list</span>
+              </div>
+
+              <ol className="m-0 list-none p-0">
+                {projects.map((project, i) => (
+                  <li
+                    key={project.slug}
+                    data-print-line
+                    className="relative grid grid-cols-1 gap-y-2.5 border-b border-carbon-rule py-[1.375rem] text-[1.0625rem] sheet:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)_minmax(0,0.8fr)_auto] sheet:items-center sheet:gap-4"
+                  >
+                    <span
+                      data-print-head
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-y-3 -left-1.5 w-1.5 bg-carbon opacity-0"
+                    />
+                    <ContainerCode code={containerNumber(i)} className="text-[1.375rem] text-carbon" />
+                    <span className="font-semibold">
+                      <Field value={project.name} what="Project name" tilt={i % 2 ? 2 : -2} />
+                    </span>
+                    <span>
+                      <StatusStamp status={project.status} tilt={i % 2 ? -2 : 2} />
+                    </span>
+                    <Link
+                      href={`/projects#${project.slug}`}
+                      className="group inline-flex items-center gap-2 font-semibold text-carbon underline decoration-carbon-rule underline-offset-4 transition-colors duration-[160ms] hover:decoration-carbon"
+                    >
+                      Packing list
+                      <svg
+                        className="size-4 flex-none transition-transform duration-[220ms] ease-out-expo group-hover:translate-x-1"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path d="M3 12h16M13 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="square" />
+                      </svg>
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </section>
           </article>
         </div>
 
-        <section
-          id="consign"
-          className="ink-steel mx-auto max-w-sheet scroll-mt-4 px-(--gutter) pt-[clamp(5rem,12vw,9rem)] pb-[clamp(4rem,8vw,6rem)]"
-          aria-labelledby="consign-title"
-        >
-          <h2
-            id="consign-title"
-            data-spray
-            className={`${display} mt-0 mb-6 max-w-[10ch] text-[clamp(3.5rem,9vw,8rem)] leading-[0.85] font-black text-ink [font-variation-settings:'opsz'_72]`}
-          >
-            Consign the next one
-          </h2>
-          <p className="mt-0 mb-10 max-w-[44ch] text-[clamp(1.125rem,1.6vw,1.375rem)] leading-[1.45] font-medium text-ink">
-            A role, a project, a studio build. Send the brief and it goes from schema to screen in one pair of hands.
-          </p>
-          <div className="max-w-120">
-            <EmailAction email={shipper.email} tone="steel" />
-          </div>
-          {shipper.links.length > 0 && (
-            <ul className="mt-8 mb-0 flex list-none flex-wrap gap-x-6 gap-y-2 p-0 font-semibold">
-              {shipper.links.map((l) => (
-                <li key={l.href}>
-                  <a className="text-ink" href={l.href}>
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+        <ConsignSection />
       </Shipment>
 
-      <footer className="ink-steel mx-auto flex w-[min(100%-2*var(--gutter),var(--container-sheet)-2*var(--gutter))] flex-wrap justify-between gap-x-8 gap-y-2 border-t-2 border-ink pt-5 pb-8 text-sm font-medium text-ink [&_p]:m-0">
-        <p>
-          Designed, built and shipped by{" "}
-          {shipper.name ?? <Awaiting what="Shipper name" tilt={-2} />}
-        </p>
-        <p>
-          Seal <strong>{commit ? `${commit}${dirty ? "+" : ""}` : "unsealed"}</strong> · Next.js
-        </p>
-      </footer>
+      <SiteFooter />
     </>
   );
 }

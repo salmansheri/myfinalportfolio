@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${stencil.variable} ${archivo.variable}`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${stencil.variable} ${archivo.variable}`}>
       <body>{children}</body>
     </html>
   );
